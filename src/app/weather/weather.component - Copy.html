@@ -1,0 +1,202 @@
+<button
+  type="button"
+  class="btn btn-primary"
+  style="position: fixed; right: 50px; top: 30px"
+  (click)="LogOut()"
+>
+  LogOut
+</button>
+
+<div class="container">
+  <div class="weather-side">
+    <div class="weather-gradient"></div>
+    <div class="date-container">
+      <h2 class="date-dayname">{{currentDay}}</h2>
+      <span class="date-day">{{date}} {{month}} {{year}}</span
+      ><span class="location">{{cityName.name}}, {{cityName.country}}</span>
+    </div>
+    <div class="weather-container">
+      <img src="assets/images/sun_small.png" height="60px" />
+      <h1 class="weather-temp">{{forecast.temp-273.15 | number:'1.1'}}°C</h1>
+      <h3 class="weather-desc">{{weather}}</h3>
+    </div>
+  </div>
+  <div class="info-side">
+    <div class="today-info-container">
+      <div class="today-info">
+        <div class="precipitation">
+          <span class="title">Air Pressure</span><span class="value">{{forecast.pressure}} hPa</span>
+          <div class="clear"></div>
+        </div>
+        <div class="humidity">
+          <span class="title">HUMIDITY</span><span class="value"> {{forecast.humidity}} %</span>
+          <div class="clear"></div>
+        </div>
+        <div class="wind">
+          <span class="title">WIND</span><span class="value">{{windSpeed}} km/h</span>
+          <div class="clear"></div>
+        </div>
+      </div>
+    </div>
+    <div class="week-container">
+      <ul class="week-list">
+        <!-- <li class="active"><i class="day-icon" data-feather="sun"></i><span class="day-name">Tue</span><span class="day-temp">29°C</span></li> -->
+        <!-- <li><i class="day-icon" data-feather="cloud"></i><span class="day-name">Wed</span><span class="day-temp">21°C</span></li> -->
+        <!-- <li><i class="day-icon" data-feather="cloud-snow"></i><span class="day-name">Thu</span><span class="day-temp">08°C</span></li> -->
+        <!-- <li><i class="day-icon" data-feather="cloud-rain"></i><span class="day-name">Fry</span><span class="day-temp">19°C</span></li> -->
+        <li class="active">
+          <img src="assets/images/cloud.png" alt="" style="height: 35px" /><span
+            class="day-name"
+            >Mon</span
+          ><span class="day-temp">12°C</span>
+        </li>
+        <li>
+          <img
+            src="assets/images/cloudy.png"
+            alt=""
+            style="height: 35px"
+          /><span class="day-name">Tue</span><span class="day-temp">09°C</span>
+        </li>
+        <li>
+          <img
+            src="assets/images/sun_small.png"
+            alt=""
+            style="height: 35px"
+          /><span class="day-name">Wed</span><span class="day-temp">07°C</span>
+        </li>
+        <li>
+          <img
+            src="assets/images/light_rain.png"
+            alt=""
+            style="height: 35px"
+          /><span class="day-name">Thu</span><span class="day-temp">13°C</span>
+        </li>
+        <div class="clear"></div>
+      </ul>
+    </div>
+    <div class="location-container">
+      <button
+        class="location-button"
+        data-toggle="modal"
+        data-target="#exampleModalCenter"
+      >
+        <i data-feather="map-pin"></i><span>Change location</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div
+  class="modal fade"
+  id="exampleModalCenter"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalCenterTitle"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Select Location</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div
+          *ngIf="location_options"
+          class="select_location d-flex justify-content-center"
+        >
+          <div
+            (click)="location_selector('auto')"
+            class="location_option card my-3 mx-1 d-flex align-items-center"
+            style="height: 100px; width: 100px"
+          >
+            <img
+              src="assets/images/pin_location.png"
+              style="height: 65px; width: 50px; margin-top: 8px"
+              alt="Search Globe"
+            />
+            <b>Auto</b>
+          </div>
+
+          <div
+            (click)="location_selector('search')"
+            class="location_option card my-3 mx-1 d-flex align-items-center"
+            style="height: 100px; width: 100px"
+          >
+            <img
+              src="assets/images/map.svg"
+              style="height: 65px; width: 65px; margin-top: 8px"
+              alt="Search Globe"
+            />
+            <b>Search</b>
+          </div>
+        </div>
+
+        <!-- search Field -->
+        <div *ngIf="search_location">
+          <h3 class="text-center mb-3">Search City</h3>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">~!~</span>
+            </div>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Enter City Name"
+              aria-label="Username"
+              aria-describedby="basic-addon1"
+            />
+          </div>
+        </div>
+      </div>
+      <!-- Search Field -->
+
+      <!-- Auto Detect -->
+      <h6 class="text-center" *ngIf="auto_location">
+        We are Fetching Data . . . . <br />
+        Please Wait
+      </h6>
+
+      <!-- Auto Detect -->
+
+      <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Close
+        </button> -->
+        <button *ngIf="location_options==false"
+          type="button"
+          class="btn btn-secondary"
+          (click)="location_selector_backword()"
+        >
+          Back
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          (click)="location_selector_backword()"
+          data-dismiss="modal"
+        >
+          Close
+        </button>
+
+        <button
+        *ngIf="search_location"
+        type="button"
+        class="btn btn-primary"
+        (click)="location_selector_backword()"
+        data-dismiss="modal"
+        >
+          Change Location
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
